@@ -72,6 +72,7 @@ class AnnounceCog:
 
     # Posts the page on discord if necessary
     async def send_new_posts(self, pages):
+        print('Checking for new posts')
         result = self.process_pages(pages)
         ids = result[0]
         attributes = result[1]
@@ -79,18 +80,21 @@ class AnnounceCog:
         path = '/app/data/posts.txt'
         try:
             with open(path, 'r+') as f:
-                last = int(f.readlines()[-1])
+                arr = f.readlines()
+                last = int(arr[-1].rstrip())  # strip trailing newline
                 for id_ in ids:
                     if id_ > last:
-                        f.write(str(id_))
+                        print('New post found ' + str(id_))
+                        f.write(str(id_) + '\n')
                         embed = self.get_embed(attributes[str(id_)])
                         for key in self.channels:
-                            chan = self.bot.get_channel(int(key))
-                            await chan.send(embed=embed)
+                            if (self.channels[key]):
+                                chan = self.bot.get_channel(int(key))
+                                await chan.send(embed=embed)
         except FileNotFoundError:  # don't flood the channel on first run, instead, just get a list of posts
             with open(path, 'a') as f:
                 for id_ in ids:
-                    f.write(str(id_))
+                    f.write(str(id_) + '\n')
 
     def get_embed(self, dic):
         if dic:
