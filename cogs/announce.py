@@ -54,8 +54,8 @@ class AnnounceCog:
     # Grab pages from Plug every minute and parse them for updates and send the updates to registered channels
     async def announcement(self):
         await self.bot.wait_until_ready()
-        client = aiohttp.ClientSession(loop=self.bot.loop)
         while not self.bot.is_closed():
+            client = aiohttp.ClientSession(loop=self.bot.loop)
             async with client as session:
                 pages = await asyncio.gather(
                     *[self.fetch(session, url) for url in self.URLS],
