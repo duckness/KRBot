@@ -1,8 +1,8 @@
 import discord
 from discord.ext import commands
 
-import sys
 import os
+import sys
 
 
 def get_prefix(bot_, message):
