@@ -4,6 +4,11 @@ import async_timeout
 from bs4 import BeautifulSoup
 import discord
 from discord.ext import commands
+import parsedatetime
+import pytz
+from tzlocal import get_localzone
+
+from datetime import datetime
 import html
 import json
 import re
@@ -100,7 +105,8 @@ class AnnounceCog:
         if dic:
             embed = discord.Embed(title=dic['title'],
                                   description=dic['description'],
-                                  url=dic['url'])
+                                  url=dic['url'],
+                                  timestamp=dic['timestamp'])
             embed.set_author(name=dic['author']['name'],
                              url=dic['author']['url'],
                              icon_url=dic['author']['icon_url'])
@@ -124,6 +130,7 @@ class AnnounceCog:
                     'description': re.sub('\s+', ' ', html.unescape(content.find(class_='txt_feed').string)).strip(),
                     'url': 'https://www.plug.game/kingsraid-en/posts/' + content.attrs['data-articleid'],
                     'thumbnail': {'url': content.find(class_='img').attrs['style'][21:-1]},
+                    'timestamp': self.get_time(content.find_all(class_='time')[1].string),
                     'author': {
                         'name': re.sub('\s+', ' ', content.find(class_='name').string).strip(),
                         'url': 'https://plug.game' + content.find(class_='name').attrs['href'],
@@ -134,6 +141,14 @@ class AnnounceCog:
             })
         ids.sort()
         return ids, attributes
+
+    def get_time(self, time_str):
+        # parsedatetime NLP does not understand min/hr
+        time_str = time_str.replace('min', 'minute').replace('hr', 'hour')
+        cal = parsedatetime.Calendar()
+        # I honestly don't care if it can't parse the time correctly, it will just output current time
+        dt = datetime(*cal.parse(time_str)[0][:6])
+        return dt.replace(tzinfo=get_localzone()).astimezone(tz=pytz.utc)
 
 
 def setup(bot):
