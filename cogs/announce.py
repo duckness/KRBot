@@ -81,14 +81,14 @@ class AnnounceCog:
         try:
             with open(path, 'r+') as f:
                 arr = f.readlines()
-                last = int(arr[-1].rstrip())  # strip trailing newline
+                num_arr = [int(s.rstrip()) for s in arr]
                 for id_ in ids:
-                    if id_ > last:
+                    if id_ not in num_arr:
                         print('New post found ' + str(id_))
                         f.write(str(id_) + '\n')
                         embed = self.get_embed(attributes[str(id_)])
                         for key in self.channels:
-                            if (self.channels[key]):
+                            if self.channels[key]:
                                 chan = self.bot.get_channel(int(key))
                                 await chan.send(embed=embed)
         except FileNotFoundError:  # don't flood the channel on first run, instead, just get a list of posts
