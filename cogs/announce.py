@@ -42,7 +42,7 @@ class AnnounceCog:
         `??announce on` turn on announcements
         `??announce off` turn off announcements
         `??announce latest` outputs the latest announcement"""
-        cid = ctx.channel.id
+        cid = str(ctx.channel.id)
         if str_input.strip() == 'on':
             self.channels[cid] = True
             await ctx.send(f'Announcements have been turned on for this channel.')
