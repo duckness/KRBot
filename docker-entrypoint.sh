@@ -4,7 +4,7 @@
 USER_ID=${UID:-1234}
 GROUP_ID=${GID:-1234}
 
-adduser -S -u $USER_ID -g $GROUP_ID krbot
+id -u krbot &>/dev/null || adduser -S -u $USER_ID -g $GROUP_ID krbot
 chown krbot /app
 chown krbot /app/*
 
