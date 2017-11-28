@@ -14,6 +14,15 @@ import json
 import re
 
 
+def is_dm_or_manage_channel():
+    async def predicate(ctx):
+        msg = ctx.message
+        ch = msg.channel
+        permissions = ch.permissions_for(msg.author)
+        return permissions.manage_channels or ctx.guild is None
+    return commands.check(predicate)
+
+
 class AnnounceCog:
 
     URLS = ['https://www.plug.game/kingsraid-en/posts?menuId=1',   # Notices
@@ -41,7 +50,7 @@ class AnnounceCog:
             await ctx.send(f'Invalid command.')
 
     @announce.command(name='on')
-    @commands.has_permissions(manage_channels=True)
+    @is_dm_or_manage_channel()
     async def announce_on(self, ctx):
         """turn on announcements"""
         cid = str(ctx.channel.id)
@@ -51,7 +60,7 @@ class AnnounceCog:
             json_data.write(json.dumps(self.channels))
 
     @announce.command(name='off')
-    @commands.has_permissions(manage_channels=True)
+    @is_dm_or_manage_channel()
     async def announce_off(self, ctx):
         """turn off announcements"""
         cid = str(ctx.channel.id)
