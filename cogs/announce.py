@@ -34,27 +34,36 @@ class AnnounceCog:
             self.channels = {}
 
     # The announce command
-    @commands.command(name='announce')
+    @commands.group()
+    async def announce(self, ctx):
+        """Turn on/off plug.game announcements for this channel"""
+        if ctx.invoked_subcommand is None:
+            await ctx.send(f'Invalid command.')
+
+    @announce.command(name='on')
     @commands.has_permissions(manage_channels=True)
-    async def add_announce_channel(self, ctx, str_input: str):
-        """Turn on/off plug.game announcements for this channel
-        Usage:
-        `??announce on` turn on announcements
-        `??announce off` turn off announcements
-        `??announce latest` outputs the latest announcement"""
+    async def announce_on(self, ctx):
+        """turn on announcements"""
         cid = str(ctx.channel.id)
-        if str_input.strip() == 'on':
-            self.channels[cid] = True
-            await ctx.send(f'Announcements have been turned on for this channel.')
-        elif str_input.strip() == 'off':
-            self.channels[cid] = False
-            await ctx.send(f'Announcements have been turned off for this channel.')
-        elif str_input.strip() == 'latest':
-            await ctx.send(embed=self.get_embed(self.latest))
-        else:
-            await ctx.send(f'I did not understand your command, try again.')
+        self.channels[cid] = True
+        await ctx.send(f'Announcements have been turned on for this channel.')
         with open(self.channel_path, 'w') as json_data:
             json_data.write(json.dumps(self.channels))
+
+    @announce.command(name='off')
+    @commands.has_permissions(manage_channels=True)
+    async def announce_off(self, ctx):
+        """turn off announcements"""
+        cid = str(ctx.channel.id)
+        self.channels[cid] = False
+        await ctx.send(f'Announcements have been turned off for this channel.')
+        with open(self.channel_path, 'w') as json_data:
+            json_data.write(json.dumps(self.channels))
+
+    @announce.command(name='latest')
+    async def announce_latest(self, ctx):
+        """outputs the latest announcement"""
+        await ctx.send(embed=self.get_embed(self.latest))
 
     # Grab pages from Plug every minute and parse them for updates and send the updates to registered channels
     async def announcement(self):
