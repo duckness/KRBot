@@ -10,6 +10,7 @@ from tzlocal import get_localzone
 
 from datetime import datetime
 import html
+import logging
 import json
 import re
 
@@ -19,7 +20,7 @@ def is_dm_or_manage_channel():
         msg = ctx.message
         ch = msg.channel
         permissions = ch.permissions_for(msg.author)
-        return permissions.manage_channels or ctx.guild is None
+        return permissions.manage_channels and ctx.guild is not None
     return commands.check(predicate)
 
 
@@ -41,6 +42,8 @@ class AnnounceCog:
         except FileNotFoundError:
             open(self.channel_path, 'a').close()
             self.channels = {}
+        except Exception as e:
+            raise(e)
 
     # The announce command
     @commands.group()
@@ -95,7 +98,7 @@ class AnnounceCog:
 
     # Posts the page on discord if necessary
     async def send_new_posts(self, pages):
-        print('Checking for new posts')
+        logging.info('Checking for new posts')
         result = self.process_pages(pages)
         ids = result[0]
         attributes = result[1]
@@ -107,7 +110,7 @@ class AnnounceCog:
                 num_arr = [int(s.rstrip()) for s in arr]
                 for id_ in ids:
                     if id_ not in num_arr:
-                        print('New post found ' + str(id_))
+                        logging.info('New post found ' + str(id_))
                         f.write(str(id_) + '\n')
                         embed = self.get_embed(attributes[str(id_)])
                         for key in self.channels:
@@ -118,6 +121,8 @@ class AnnounceCog:
             with open(path, 'a') as f:
                 for id_ in ids:
                     f.write(str(id_) + '\n')
+        except Exception as e:
+            raise(e)
 
     def get_embed(self, dic):
         if dic:
