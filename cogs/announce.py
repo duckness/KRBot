@@ -59,8 +59,7 @@ class AnnounceCog:
         cid = str(ctx.channel.id)
         self.channels[cid] = True
         await ctx.send(f'Announcements have been turned on for this channel.')
-        with open(self.channel_path, 'w') as json_data:
-            json_data.write(json.dumps(self.channels))
+        self.write_channels()
 
     @announce.command(name='off')
     @is_dm_or_manage_channel()
@@ -69,8 +68,7 @@ class AnnounceCog:
         cid = str(ctx.channel.id)
         self.channels[cid] = False
         await ctx.send(f'Announcements have been turned off for this channel.')
-        with open(self.channel_path, 'w') as json_data:
-            json_data.write(json.dumps(self.channels))
+        self.write_channels()
 
     @announce.command(name='latest')
     async def announce_latest(self, ctx):
@@ -116,7 +114,13 @@ class AnnounceCog:
                         for key in self.channels:
                             if self.channels[key]:
                                 chan = self.bot.get_channel(int(key))
-                                await chan.send(embed=embed)
+                                # be extra sure we can post
+                                if isinstance(chan, discord.abc.GuildChannel):
+                                    await chan.send(embed=embed)
+                                else:
+                                    logging.warning(key + " is invalid, removing")
+                                    self.channels[key] = False
+                                    self.write_channels()
         except FileNotFoundError:  # don't flood the channel on first run, instead, just get a list of posts
             with open(path, 'a') as f:
                 for id_ in ids:
@@ -172,6 +176,10 @@ class AnnounceCog:
         # I honestly don't care if it can't parse the time correctly, it will just output current time
         dt = datetime(*cal.parse(time_str)[0][:6])
         return dt.replace(tzinfo=get_localzone()).astimezone(tz=pytz.utc)
+
+    def write_channels(self):
+        with open(self.channel_path, 'w') as json_data:
+            json_data.write(json.dumps(self.channels))
 
 
 def setup(bot):
