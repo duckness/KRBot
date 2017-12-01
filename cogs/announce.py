@@ -116,7 +116,9 @@ class AnnounceCog:
                                 chan = self.bot.get_channel(int(key))
                                 # be extra sure we can post
                                 if isinstance(chan, discord.abc.GuildChannel):
+                                    logging.info("attempting to send to channel " + key)
                                     await chan.send(embed=embed)
+                                    logging.info("successfully sent to #" + chan.name + " on " + chan.guild.name + " owned by @" + chan.guild.owner.name)
                                 else:
                                     logging.warning(key + " is invalid, removing")
                                     self.channels[key] = False
