@@ -35,6 +35,7 @@ class AnnounceCog:
         self.bot = bot
         self.bg_task = bot.loop.create_task(self.announcement())
         self.channel_path = '/app/data/channels.json'
+        self.health_path = '/tmp/plugfetch.health'
         self.latest = {}
         try:
             with open(self.channel_path) as json_data:
@@ -87,6 +88,7 @@ class AnnounceCog:
                     return_exceptions=True
                 )
             await self.send_new_posts(pages)
+            self.announce_health()
             await asyncio.sleep(60)
 
     async def fetch(self, session, url):
@@ -182,6 +184,10 @@ class AnnounceCog:
     def write_channels(self):
         with open(self.channel_path, 'w') as json_data:
             json_data.write(json.dumps(self.channels))
+
+    # make a file every time we scrape, if the file does not exist, we have failed somehow and the container restarts
+    def announce_health(self):
+        open(self.health_path, 'a').close()
 
 
 def setup(bot):

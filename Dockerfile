@@ -1,5 +1,8 @@
 FROM python:3.6.3-alpine3.6
 
+HEALTHCHECK --interval=65s --timeout=2s --start-period=30s --retries=3 \
+    CMD test -e /tmp/plugfetch.health && rm /tmp/plugfetch.health
+
 WORKDIR app
 COPY requirements.txt /app/requirements.txt
 
