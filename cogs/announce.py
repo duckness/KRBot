@@ -26,10 +26,10 @@ def is_dm_or_manage_channel():
 
 class AnnounceCog:
 
-    URLS = ['https://www.plug.game/kingsraid-en/posts?menuId=1',   # Notices
-            'https://www.plug.game/kingsraid-en/posts?menuId=2',   # Events
-            'https://www.plug.game/kingsraid-en/posts?menuId=9',   # Patch Note
-            'https://www.plug.game/kingsraid-en/posts?menuId=12']  # Green Note
+    URLS = ['https://www.plug.game/kingsraid/1030449/posts?menuId=1',   # Notices
+            'https://www.plug.game/kingsraid/1030449/posts?menuId=2',   # Events
+            'https://www.plug.game/kingsraid/1030449/posts?menuId=9',   # Patch Note
+            'https://www.plug.game/kingsraid/1030449/posts?menuId=12']  # Green Note
 
     def __init__(self, bot):
         self.bot = bot
