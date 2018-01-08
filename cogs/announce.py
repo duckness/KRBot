@@ -141,7 +141,8 @@ class AnnounceCog:
             embed.set_author(name=dic['author']['name'],
                              url=dic['author']['url'],
                              icon_url=dic['author']['icon_url'])
-            embed.set_thumbnail(url=dic['thumbnail']['url'])
+            if 'thumbnail' in dic:
+                embed.set_thumbnail(url=dic['thumbnail']['url'])
             return embed
         else:
             return discord.Embed(title='No Articles')
@@ -155,12 +156,11 @@ class AnnounceCog:
             # get a list of article-ids
             ids += [int(content.attrs['data-articleid']) for content in contents]
             # get a dictionary of attributes of every forum post in the page
-            attributes.update({
-                content.attrs['data-articleid']: {
+            for content in contents:
+                post = {
                     'title': re.sub('\s+', ' ', html.unescape(content.find(class_='tit_feed').string)).strip(),
                     'description': re.sub('\s+', ' ', html.unescape(content.find(class_='txt_feed').string)).strip(),
-                    'url': 'https://www.plug.game/kingsraid-en/posts/' + content.attrs['data-articleid'],
-                    'thumbnail': {'url': content.find(class_='img').attrs['style'][21:-1]},
+                    'url': 'https://www.plug.game/kingsraid/1030449/posts/' + content.attrs['data-articleid'],
                     'timestamp': self.get_time(content.find_all(class_='time')[1].string),
                     'author': {
                         'name': re.sub('\s+', ' ', content.find(class_='name').string).strip(),
@@ -168,8 +168,9 @@ class AnnounceCog:
                         'icon_url': content.find(class_='thumb').attrs['src']
                     }
                 }
-                for content in contents
-            })
+                if content.find_all(class_='img'):
+                    post['thumbnail'] = {'url': content.find(class_='img').attrs['style'][21:-1]}
+                attributes[content.attrs['data-articleid']] = post
         ids.sort()
         return ids, attributes
 
