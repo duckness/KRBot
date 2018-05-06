@@ -1,6 +1,6 @@
-# KRBot
+# KRBot (Discontinued)
 
-A Discord bot for King's Raid.
+A Discord bot for King's Raid. The bot still 
 
 ## Features
 
@@ -9,7 +9,7 @@ A Discord bot for King's Raid.
 
 ## Setup
 
-DM duckness#4861 on discord for the bot link. 
+~~DM duckness#4861 on discord for the bot link.~~ This bot is no longer in active development, no additional users will be supported. Existing users can continue to use the bot. It is recommended you use [CleoBot](https://discordapp.com/api/oauth2/authorize?client_id=383736694886891520&permissions=85057&scope=bot) instead, it has a lot more features. 
 
 Alternatively, if you wish to run the bot on your own, here are instructions to setup.
 
