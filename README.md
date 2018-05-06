@@ -1,6 +1,6 @@
 # KRBot (Discontinued)
 
-A Discord bot for King's Raid. The bot still 
+A Discord bot for King's Raid. 
 
 ## Features
 
