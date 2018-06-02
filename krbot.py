@@ -20,7 +20,7 @@ bot = commands.Bot(command_prefix=get_prefix, description='A Discord Bot for Kin
 async def on_ready():
     logging.basicConfig(level=logging.INFO)
     print(f'\n\nLogged in as: {bot.user.name} - {bot.user.id}\nVersion: {discord.__version__}\n')
-    await bot.change_presence(game=discord.Game(name='King\'s Raid'))
+    await bot.change_presence(activity=discord.Game(name='King\'s Raid'))
     if __name__ == '__main__':
         for extension in initial_extensions:
             try:
