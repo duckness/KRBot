@@ -29,7 +29,11 @@ class AnnounceCog:
     URLS = ['https://www.plug.game/kingsraid/1030449/posts?menuId=1',   # Notices
             'https://www.plug.game/kingsraid/1030449/posts?menuId=2',   # Events
             'https://www.plug.game/kingsraid/1030449/posts?menuId=9',   # Patch Note
-            'https://www.plug.game/kingsraid/1030449/posts?menuId=12']  # Green Note
+            'https://www.plug.game/kingsraid/1030449/posts?menuId=12',  # Green Note
+            'https://www.plug.game/kingsraid/1030449/posts?menuId=14',  # Challenge Raid
+            'https://www.plug.game/kingsraid/1030449/posts?menuId=19',  # Talk to GM
+            'https://www.plug.game/kingsraid/1030449/posts?menuId=22']  # GM Note
+            
 
     def __init__(self, bot):
         self.bot = bot
