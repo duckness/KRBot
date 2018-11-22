@@ -27,13 +27,8 @@ def is_dm_or_manage_channel():
 class AnnounceCog:
 
     URLS = ['https://www.plug.game/kingsraid/1030449/posts?menuId=1',   # Notices
-            'https://www.plug.game/kingsraid/1030449/posts?menuId=2',   # Events
             'https://www.plug.game/kingsraid/1030449/posts?menuId=9',   # Patch Note
-            'https://www.plug.game/kingsraid/1030449/posts?menuId=12',  # Green Note
-            'https://www.plug.game/kingsraid/1030449/posts?menuId=14',  # Challenge Raid
-            'https://www.plug.game/kingsraid/1030449/posts?menuId=19',  # Talk to GM
-            'https://www.plug.game/kingsraid/1030449/posts?menuId=22']  # GM Note
-            
+            'https://www.plug.game/kingsraid/1030449/posts?menuId=32']  # Game Contents
 
     def __init__(self, bot):
         self.bot = bot
@@ -122,11 +117,14 @@ class AnnounceCog:
                                 chan = self.bot.get_channel(int(key))
                                 # be extra sure we can post
                                 if isinstance(chan, discord.abc.GuildChannel):
-                                    logging.info("attempting to send to channel " + key)
+                                    logging.info(
+                                        "attempting to send to channel " + key)
                                     await chan.send(embed=embed)
-                                    logging.info("successfully sent to #" + chan.name + " on " + chan.guild.name + " owned by @" + chan.guild.owner.name)
+                                    logging.info("successfully sent to #" + chan.name + " on " +
+                                                 chan.guild.name + " owned by @" + chan.guild.owner.name)
                                 else:
-                                    logging.warning(key + " is invalid, removing")
+                                    logging.warning(
+                                        key + " is invalid, removing")
                                     self.channels[key] = False
                                     self.write_channels()
         except FileNotFoundError:  # don't flood the channel on first run, instead, just get a list of posts
@@ -158,7 +156,8 @@ class AnnounceCog:
             soup = BeautifulSoup(page, 'html.parser')
             contents = soup.find_all(class_='frame_plug')
             # get a list of article-ids
-            ids += [int(content.attrs['data-articleid']) for content in contents]
+            ids += [int(content.attrs['data-articleid'])
+                    for content in contents]
             # get a dictionary of attributes of every forum post in the page
             for content in contents:
                 post = {
@@ -173,7 +172,8 @@ class AnnounceCog:
                     }
                 }
                 if content.find_all(class_='img'):
-                    post['thumbnail'] = {'url': content.find(class_='img').attrs['style'][21:-1]}
+                    post['thumbnail'] = {'url': content.find(
+                        class_='img').attrs['style'][21:-1]}
                 attributes[content.attrs['data-articleid']] = post
         ids.sort()
         return ids, attributes
